@@ -79,9 +79,19 @@ def write_nexus(sequences, ngen=10000, outgroup=None):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
+    if len(sys.argv) >= 2:
         input_file = sys.argv[1]
         sequences = read_fasta(input_file)
-        write_nexus(sequences)
+        
+        # Set default values for ngen and outgroup
+        ngen = 10000
+        outgroup = None
+
+        # Check if ngen and outgroup arguments are provided
+        if len(sys.argv) >= 4:
+            ngen = int(sys.argv[2])
+            outgroup = sys.argv[3]
+
+        write_nexus(sequences, ngen, outgroup)
     else:
-        print("Usage: python FASTA2NEX.py input.fasta > output.nexus")
+        print("Usage: python FASTA2NEX.py input.fasta [ngen] [outgroup] > output.nexus")
