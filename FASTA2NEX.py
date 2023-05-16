@@ -1,13 +1,18 @@
 import sys
 
+
 def read_fasta(input_file):
     """
     Reads a FASTA file and returns a dictionary where each key is a sequence name
     and each value is the corresponding sequence.
-    
+
+    If any sequence name is longer than 99 characters or there are two sequence names
+    with the same first 99 characters, the names are truncated and appended with a
+    two-digit number for uniqueness.
+
     Args:
         input_file (str): The path to the input FASTA file.
-        
+
     Returns:
         dict: A dictionary where each key is a sequence name and each value is the
         corresponding sequence.
@@ -16,26 +21,38 @@ def read_fasta(input_file):
     with open(input_file, "r") as f:
         sequence = ""
         name = None
+        name_counter = 1  # Counter for appending numbers to truncated names
+        names_set = set()  # Set to store truncated names and check uniqueness
         for line in f:
             line = line.strip()
             if line.startswith(">"):
                 if name is not None:
-                    sequences[name] = sequence.upper()
+                    truncated_name = name[:99]
+                    if truncated_name in names_set:
+                        truncated_name += f"{name_counter:02d}"
+                        name_counter += 1
+                    sequences[truncated_name] = sequence.upper()
                     sequence = ""
                 name = line[1:]
                 if len(name) > 99:
                     name = name[:99]
+                names_set.add(name)
             else:
                 sequence += line.replace(".", "N").replace("-", "N").upper()
         if name is not None:
-            sequences[name] = sequence.upper()
+            truncated_name = name[:99]
+            if truncated_name in names_set:
+                truncated_name += f"{name_counter:02d}"
+                name_counter += 1
+            sequences[truncated_name] = sequence.upper()
     return sequences
+
 
 def write_nexus(sequences, ngen=10000, outgroup=None):
     """
     Writes the sequences in NEXUS format to stdout, with a MrBayes block including the
     provided ngen and outgroup parameters.
-    
+
     Args:
         sequences (dict): A dictionary where each key is a sequence name and each value
         is the corresponding sequence.
@@ -47,7 +64,7 @@ def write_nexus(sequences, ngen=10000, outgroup=None):
     print("dimensions ntax={} nchar={};".format(len(sequences), len(next(iter(sequences.values())))))
     print("format datatype=DNA gap=- missing=N;")
     print("matrix")
-    
+
     for name, sequence in sequences.items():
         print("{} {}".format(name, sequence))
     print(";")
@@ -59,6 +76,7 @@ def write_nexus(sequences, ngen=10000, outgroup=None):
     if outgroup is not None:
         print("outgroup {};".format(outgroup))
     print("end;")
+
 
 if __name__ == "__main__":
     if len(sys.argv) == 2:
