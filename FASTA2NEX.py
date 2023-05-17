@@ -51,19 +51,19 @@ def read_fasta(input_file):
             if line.startswith(">"):
                 if name is not None:
                     truncated_name = truncate_name(name)
-                    if truncated_name in names_set:
-                        truncated_name = truncated_name[:97] + f"{name_counter:02d}"
+                    while truncated_name in names_set:
+                        truncated_name = truncate_name(name[:97]) + f"{name_counter:02d}"
                         name_counter += 1
                     sequences[truncated_name] = normalize_sequence(sequence.upper())
                     sequence = ""
-                name = line[1:100]  # Truncate name to the first 99 characters
+                name = line[1:]  # Remove the ">" character from the name
                 names_set.add(name)
             else:
                 sequence += line
         if name is not None:
             truncated_name = truncate_name(name)
-            if truncated_name in names_set:
-                truncated_name = truncated_name[:97] + f"{name_counter:02d}"
+            while truncated_name in names_set:
+                truncated_name = truncate_name(name[:97]) + f"{name_counter:02d}"
                 name_counter += 1
             sequences[truncated_name] = normalize_sequence(sequence.upper())
     return sequences
