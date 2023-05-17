@@ -1,5 +1,9 @@
 import sys
 
+#Default values of ngen and outgroup
+ngen = 10000
+outgroup = None
+
 def truncate_name(name):
     """
     Truncates a sequence name to 99 characters.
@@ -68,7 +72,7 @@ def read_fasta(input_file):
             sequences[truncated_name] = normalize_sequence(sequence.upper())
     return sequences
 
-def write_nexus(sequences, ngen=10000, outgroup=None):
+def write_nexus(sequences):
     """
     Writes the sequences in NEXUS format to stdout, with a MrBayes block including the
     provided ngen and outgroup parameters.
@@ -76,8 +80,6 @@ def write_nexus(sequences, ngen=10000, outgroup=None):
     Args:
         sequences (dict): A dictionary where each key is a sequence name and each value
         is the corresponding sequence.
-        ngen (int): The number of generations to run in the MrBayes analysis.
-        outgroup (str): The name of the outgroup sequence.
     """
     print("#NEXUS\n")
     print("BEGIN DATA;")
@@ -97,31 +99,25 @@ def write_nexus(sequences, ngen=10000, outgroup=None):
         print("  outgroup {};".format(outgroup))
     print("end;")
 
-def fasta_to_nexus(input_file, ngen=10000, outgroup=None):
+def fasta_to_nexus(input_file):
     """
     Converts a FASTA file to NEXUS format and prints it to stdout.
 
     Args:
         input_file (str): The path to the input FASTA file.
-        ngen (int): The number of generations to run in the MrBayes analysis.
-        outgroup (str): The name of the outgroup sequence.
     """
     sequences = read_fasta(input_file)
-    write_nexus(sequences, ngen, outgroup)
+    write_nexus(sequences)
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
         input_file = sys.argv[1]
-
-        # Set default values for ngen and outgroup
-        ngen = 10000
-        outgroup = None
 
         # Check if ngen and outgroup arguments are provided
         if len(sys.argv) >= 4:
             ngen = int(sys.argv[2])
             outgroup = sys.argv[3]
 
-        fasta_to_nexus(input_file, ngen, outgroup)
+        fasta_to_nexus(input_file)
     else:
         print("Usage: python FASTA2NEX.py input.fasta [ngen] [outgroup] > output.nexus")
