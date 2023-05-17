@@ -1,5 +1,29 @@
 import sys
 
+def truncate_name(name):
+    """
+    Truncates a sequence name to 99 characters.
+
+    Args:
+        name (str): The sequence name.
+
+    Returns:
+        str: The truncated sequence name.
+    """
+    return name[:99]
+
+def normalize_sequence(sequence):
+    """
+    Replaces '.' and '-' characters with 'N' to represent missing and gap characters.
+
+    Args:
+        sequence (str): The input sequence.
+
+    Returns:
+        str: The normalized sequence.
+    """
+    return sequence.replace(".", "N").replace("-", "N")
+
 def read_fasta(input_file):
     """
     Reads a FASTA file and returns a dictionary where each key is a sequence name
@@ -26,24 +50,23 @@ def read_fasta(input_file):
             line = line.strip()
             if line.startswith(">"):
                 if name is not None:
-                    truncated_name = name[:99]
+                    truncated_name = truncate_name(name)
                     if truncated_name in names_set:
                         truncated_name = truncated_name[:97] + f"{name_counter:02d}"
                         name_counter += 1
-                    sequences[truncated_name] = sequence.upper()
+                    sequences[truncated_name] = normalize_sequence(sequence.upper())
                     sequence = ""
                 name = line[1:100]  # Truncate name to the first 99 characters
                 names_set.add(name)
             else:
-                sequence += line.replace(".", "N").replace("-", "N").upper()
+                sequence += line
         if name is not None:
-            truncated_name = name[:99]
+            truncated_name = truncate_name(name)
             if truncated_name in names_set:
                 truncated_name = truncated_name[:97] + f"{name_counter:02d}"
                 name_counter += 1
-            sequences[truncated_name] = sequence.upper()
+            sequences[truncated_name] = normalize_sequence(sequence.upper())
     return sequences
-
 
 def write_nexus(sequences, ngen=10000, outgroup=None):
     """
@@ -74,11 +97,21 @@ def write_nexus(sequences, ngen=10000, outgroup=None):
         print("  outgroup {};".format(outgroup))
     print("end;")
 
+def fasta_to_nexus(input_file, ngen=10000, outgroup=None):
+    """
+    Converts a FASTA file to NEXUS format and prints it to stdout.
+
+    Args:
+        input_file (str): The path to the input FASTA file.
+        ngen (int): The number of generations to run in the MrBayes analysis.
+        outgroup (str): The name of the outgroup sequence.
+    """
+    sequences = read_fasta(input_file)
+    write_nexus(sequences, ngen, outgroup)
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
         input_file = sys.argv[1]
-        sequences = read_fasta(input_file)
 
         # Set default values for ngen and outgroup
         ngen = 10000
@@ -89,7 +122,6 @@ if __name__ == "__main__":
             ngen = int(sys.argv[2])
             outgroup = sys.argv[3]
 
-        write_nexus(sequences, ngen, outgroup)
+        fasta_to_nexus(input_file, ngen, outgroup)
     else:
         print("Usage: python FASTA2NEX.py input.fasta [ngen] [outgroup] > output.nexus")
-
