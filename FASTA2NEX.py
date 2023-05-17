@@ -1,6 +1,5 @@
 import sys
 
-
 def read_fasta(input_file):
     """
     Reads a FASTA file and returns a dictionary where each key is a sequence name
@@ -29,20 +28,18 @@ def read_fasta(input_file):
                 if name is not None:
                     truncated_name = name[:99]
                     if truncated_name in names_set:
-                        truncated_name += f"{name_counter:02d}"
+                        truncated_name = truncated_name[:97] + f"{name_counter:02d}"
                         name_counter += 1
                     sequences[truncated_name] = sequence.upper()
                     sequence = ""
-                name = line[1:]
-                if len(name) > 99:
-                    name = name[:99]
+                name = line[1:100]  # Truncate name to the first 99 characters
                 names_set.add(name)
             else:
                 sequence += line.replace(".", "N").replace("-", "N").upper()
         if name is not None:
             truncated_name = name[:99]
             if truncated_name in names_set:
-                truncated_name += f"{name_counter:02d}"
+                truncated_name = truncated_name[:97] + f"{name_counter:02d}"
                 name_counter += 1
             sequences[truncated_name] = sequence.upper()
     return sequences
@@ -82,7 +79,7 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         input_file = sys.argv[1]
         sequences = read_fasta(input_file)
-        
+
         # Set default values for ngen and outgroup
         ngen = 10000
         outgroup = None
@@ -95,3 +92,4 @@ if __name__ == "__main__":
         write_nexus(sequences, ngen, outgroup)
     else:
         print("Usage: python FASTA2NEX.py input.fasta [ngen] [outgroup] > output.nexus")
+
