@@ -56,22 +56,22 @@ def write_nexus(sequences, ngen=10000, outgroup=None):
         ngen (int): The number of generations to run in the MrBayes analysis.
         outgroup (str): The name of the outgroup sequence.
     """
-    print("#NEXUS")
-    print("begin data;")
-    print("dimensions ntax={} nchar={};".format(len(sequences), len(next(iter(sequences.values())))))
-    print("format datatype=DNA gap=- missing=N;")
-    print("matrix")
+    print("#NEXUS\n")
+    print("BEGIN DATA;")
+    print("DIMENSIONS NTAX={} NCHAR={};".format(len(sequences), len(next(iter(sequences.values())))))
+    print("FORMAT DATATYPE=DNA GAP=- MISSING=N;")
+    print("MATRIX")
 
     for name, sequence in sequences.items():
         print("{} {}".format(name, sequence))
     print(";")
-    print("end;")
+    print("END;\n")
     print("begin mrbayes;")
-    print("set autoclose=yes nowarn=yes;")
-    print("lset nst=6 rates=gamma;")
-    print("mcmc ngen={} samplefreq=100 diagnfreq=1000 burninfrac=0.25 starttree=random;".format(ngen))
+    print("  set autoclose=yes nowarn=yes;")
+    print("  lset nst=6 rates=gamma;")
+    print("  mcmc ngen={} samplefreq=100 diagnfreq=1000 burninfrac=0.25 starttree=random;".format(ngen))
     if outgroup is not None:
-        print("outgroup {};".format(outgroup))
+        print("  outgroup {};".format(outgroup))
     print("end;")
 
 
