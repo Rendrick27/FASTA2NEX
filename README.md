@@ -11,8 +11,6 @@ This Python script converts a FASTA file to NEXUS format with a MrBayes block, p
 ## Requirements
 Python 3.x
 
-`bash pipeline.sh SEQ_DIR`
-
 1-Ensure you have Python 3.x installed on your system.
 
 2-Download or clone the repository.
