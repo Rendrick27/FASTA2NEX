@@ -1,5 +1,6 @@
 import sys
 
+
 def truncate_name(name):
     """
     Truncates a sequence name to 99 characters.
@@ -12,9 +13,11 @@ def truncate_name(name):
     """
     return name[:99]
 
+
 def normalize_sequence(sequence):
     """
-    Replaces '.' and '-' characters with 'N' to represent missing and gap characters.
+    Replaces '.' and '-' characters with 'N' to represent missing
+        and gap characters.
 
     Args:
         sequence (str): The input sequence.
@@ -23,6 +26,7 @@ def normalize_sequence(sequence):
         str: The normalized sequence.
     """
     return sequence.replace(".", "N").replace("-", "N")
+
 
 def read_fasta(input_file):
     """
@@ -48,7 +52,8 @@ def read_fasta(input_file):
                 if name is not None:
                     truncated_name = truncate_name(name)
                     while truncated_name in names_set:
-                        truncated_name = truncate_name(name[:97]) + f"{name_counter:02d}"
+                        truncated_name = (truncate_name(name[:97]) + 
+                                          f"{name_counter:02d}")
                         name_counter += 1
                     sequences[truncated_name] = normalize_sequence(sequence.upper())
                     sequence = ""
@@ -59,17 +64,21 @@ def read_fasta(input_file):
         if name is not None:
             truncated_name = truncate_name(name)
             while truncated_name in names_set:
-                truncated_name = truncate_name(name[:97]) + f"{name_counter:02d}"
+                truncated_name = (truncate_name(name[:97]) + 
+                                  f"{name_counter:02d}")
                 name_counter += 1
             sequences[truncated_name] = normalize_sequence(sequence.upper())
     return sequences
+
+
 
 def generate_nexus_header(sequences):
     """
     Generates the NEXUS DATA header.
 
     Args:
-        sequences (dict): A dictionary where each key is a sequence name and each value is the corresponding sequence.
+        sequences (dict): A dictionary where each key is a sequence name
+        and each value is the corresponding sequence.
 
     Returns:
         str: The NEXUS DATA header.
@@ -85,19 +94,23 @@ def generate_nexus_header(sequences):
     ]
     return "\n".join(header)
 
+
 def generate_nexus_matrix(sequences):
     """
     Generates the NEXUS MATRIX block.
 
     Args:
-        sequences (dict): A dictionary where each key is a sequence name and each value is the corresponding sequence.
+        sequences (dict): A dictionary where each key is a sequence name
+            and each value is the corresponding sequence.
 
     Returns:
         str: The NEXUS MATRIX block.
     """
-    matrix_lines = [f"{name} {sequence}" for name, sequence in sequences.items()]
+    matrix_lines = [f"{name} {sequence}"
+                    for name, sequence in sequences.items()]
     matrix = "\n".join(matrix_lines) + "\n;\nEND;\n"
     return matrix
+
 
 def fasta_to_nexus(input_file):
     """
@@ -112,9 +125,10 @@ def fasta_to_nexus(input_file):
     print(header)
     print(matrix)
 
+
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
         input_file = sys.argv[1]
         fasta_to_nexus(input_file)
     else:
-        print("Usage: python FASTA2NEX.py input.fasta > output.nexus")
+        print("Usage: python script.py input.fasta > output.nexus")

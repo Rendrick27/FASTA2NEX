@@ -1,5 +1,5 @@
 # FASTA to NEXUS Converter
-
+## Description
 This Python script converts a FASTA file to NEXUS format with a MrBayes block, providing a convenient way to process biological sequence data for further analysis.
 
 ## Features
@@ -9,17 +9,24 @@ This Python script converts a FASTA file to NEXUS format with a MrBayes block, p
 * Supports customization of the number of generations (ngen) and outgroup sequence (outgroup) for the MrBayes block.
 
 ## Requirements
-Python 3.x
+* <a href= "https://www.python.org/"> Python </a> 
 
-1-Ensure you have Python 3.x installed on your system.
+## Installation
+```bash
+# Download the project
+wget https://github.com/Rendrick27/FASTA2NEX/archive/refs/heads/main.zip
 
-2-Download or clone the repository.
-
-3-Open a terminal or command prompt and navigate to the repository's directory.
-
-4-Run the following command:
-
-`python FASTA2NEX.py input.fasta [ngen] [outgroup] > output.nexus`
+# Unzip the folder
+unzip main.zip
+```
+## Usage
+```bash
+cd main.zip
+```
+Then, run the following command:
+```bash
+python fasta2nex.py input.fasta [ngen] [outgroup]
+```
 
 * Replace input.fasta with the path to your FASTA file.
 
@@ -27,9 +34,17 @@ Python 3.x
 
 * Optionally, specify the name of the outgroup sequence (outgroup).
 
-* The NEXUS output will be printed to the console, so redirect it to a file using > output.nexus.
+* The NEXUS output will be printed to the console
 
 ## Example
 To convert a FASTA file named sequences.fasta to NEXUS format with 5000 generations and an outgroup sequence named outgroup1, run the following command:
 
-`python FASTA2NEX.py sequences.fasta 5000 outgroup1 > output.nexus`
+`python fasta2nex.py sequences.fasta 5000 outgroup1`
+
+## Credits
+<p> <a href= "https://github.com/Rendrick27"> Rendrick Carreira - 201901365 </a> </p>
+<p> <a href= "https://github.com/StarGazerNex"> Ravi Silva - 202100191 </a> </p>
+<p> <a href= "https://github.com/Francisca-Figueiredo"> Francisca Figueiredo  - 202200580 </a> </p>
+
+## License
+GPLv3
