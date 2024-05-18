@@ -30,15 +30,15 @@ def normalize_sequence(sequence):
 
 def read_fasta(input_file):
     """
-    Reads a FASTA file and returns a dictionary where each key is a sequence name
-    and each value is the corresponding sequence.
+    Reads a FASTA file and returns a dictionary where each key is a
+        sequence name and each value is the corresponding sequence.
 
     Args:
         input_file (str): The path to the input FASTA file.
 
     Returns:
-        dict: A dictionary where each key is a sequence name and each value is the
-        corresponding sequence.
+        dict: A dictionary where each key is a sequence name
+        and each value is the corresponding sequence.
     """
     sequences = {}
     with open(input_file, "r") as f:
@@ -52,10 +52,11 @@ def read_fasta(input_file):
                 if name is not None:
                     truncated_name = truncate_name(name)
                     while truncated_name in names_set:
-                        truncated_name = (truncate_name(name[:97]) + 
+                        truncated_name = (truncate_name(name[:97]) +
                                           f"{name_counter:02d}")
                         name_counter += 1
-                    sequences[truncated_name] = normalize_sequence(sequence.upper())
+                    sequences[truncated_name] = normalize_sequence(
+                        sequence.upper())
                     sequence = ""
                 name = line[1:]  # Remove the ">" character from the name
                 names_set.add(name)
@@ -64,12 +65,11 @@ def read_fasta(input_file):
         if name is not None:
             truncated_name = truncate_name(name)
             while truncated_name in names_set:
-                truncated_name = (truncate_name(name[:97]) + 
+                truncated_name = (truncate_name(name[:97]) +
                                   f"{name_counter:02d}")
                 name_counter += 1
             sequences[truncated_name] = normalize_sequence(sequence.upper())
     return sequences
-
 
 
 def generate_nexus_header(sequences):
@@ -131,4 +131,4 @@ if __name__ == "__main__":
         input_file = sys.argv[1]
         fasta_to_nexus(input_file)
     else:
-        print("Usage: python script.py input.fasta > output.nexus")
+        print("Usage: python script.py input.fasta")
