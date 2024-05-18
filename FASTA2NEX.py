@@ -1,9 +1,5 @@
 import sys
 
-#Default values of ngen and outgroup
-ngen = 10000
-outgroup = None
-
 def truncate_name(name):
     """
     Truncates a sequence name to 99 characters.
@@ -32,10 +28,6 @@ def read_fasta(input_file):
     """
     Reads a FASTA file and returns a dictionary where each key is a sequence name
     and each value is the corresponding sequence.
-
-    If any sequence name is longer than 99 characters or there are two sequence names
-    with the same first 99 characters, the names are truncated and appended with a
-    two-digit number for uniqueness.
 
     Args:
         input_file (str): The path to the input FASTA file.
@@ -72,32 +64,40 @@ def read_fasta(input_file):
             sequences[truncated_name] = normalize_sequence(sequence.upper())
     return sequences
 
-def write_nexus(sequences):
+def generate_nexus_header(sequences):
     """
-    Writes the sequences in NEXUS format to stdout, with a MrBayes block including the
-    provided ngen and outgroup parameters.
+    Generates the NEXUS DATA header.
 
     Args:
-        sequences (dict): A dictionary where each key is a sequence name and each value
-        is the corresponding sequence.
-    """
-    print("#NEXUS\n")
-    print("BEGIN DATA;")
-    print("DIMENSIONS NTAX={} NCHAR={};".format(len(sequences), len(next(iter(sequences.values())))))
-    print("FORMAT DATATYPE=DNA GAP=- MISSING=N;")
-    print("MATRIX")
+        sequences (dict): A dictionary where each key is a sequence name and each value is the corresponding sequence.
 
-    for name, sequence in sequences.items():
-        print("{} {}".format(name, sequence))
-    print(";")
-    print("END;\n")
-    print("begin mrbayes;")
-    print("  set autoclose=yes nowarn=yes;")
-    print("  lset nst=6 rates=gamma;")
-    print("  mcmc ngen={} samplefreq=100 diagnfreq=1000 burninfrac=0.25 starttree=random;".format(ngen))
-    if outgroup is not None:
-        print("  outgroup {};".format(outgroup))
-    print("end;")
+    Returns:
+        str: The NEXUS DATA header.
+    """
+    n_tax = len(sequences)
+    n_char = len(next(iter(sequences.values())))
+    header = [
+        "#NEXUS\n",
+        "BEGIN DATA;",
+        f"DIMENSIONS NTAX={n_tax} NCHAR={n_char};",
+        "FORMAT DATATYPE=DNA GAP=- MISSING=N;",
+        "MATRIX"
+    ]
+    return "\n".join(header)
+
+def generate_nexus_matrix(sequences):
+    """
+    Generates the NEXUS MATRIX block.
+
+    Args:
+        sequences (dict): A dictionary where each key is a sequence name and each value is the corresponding sequence.
+
+    Returns:
+        str: The NEXUS MATRIX block.
+    """
+    matrix_lines = [f"{name} {sequence}" for name, sequence in sequences.items()]
+    matrix = "\n".join(matrix_lines) + "\n;\nEND;\n"
+    return matrix
 
 def fasta_to_nexus(input_file):
     """
@@ -107,17 +107,14 @@ def fasta_to_nexus(input_file):
         input_file (str): The path to the input FASTA file.
     """
     sequences = read_fasta(input_file)
-    write_nexus(sequences)
+    header = generate_nexus_header(sequences)
+    matrix = generate_nexus_matrix(sequences)
+    print(header)
+    print(matrix)
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
         input_file = sys.argv[1]
-
-        # Check if ngen and outgroup arguments are provided
-        if len(sys.argv) >= 4:
-            ngen = int(sys.argv[2])
-            outgroup = sys.argv[3]
-
         fasta_to_nexus(input_file)
     else:
-        print("Usage: python FASTA2NEX.py input.fasta [ngen] [outgroup] > output.nexus")
+        print("Usage: python FASTA2NEX.py input.fasta > output.nexus")
