@@ -3,14 +3,22 @@ name: CI/CD
 on: push
 
 jobs:
-  FASTA-NEXUS:
+  unittest:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run script
       run: python3 fasta2nex.py test.fasta
 
-  PEP8:
+  fasta2nex:
+    needs: unittest
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run script
+      run: python3 fasta2nex.py test.fasta
+
+  pep8:
     runs-on: ubuntu-latest
     container:
       image: python:3.9

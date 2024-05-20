@@ -65,6 +65,5 @@ END;"""
         sys.stdout = sys.__stdout__
 
         # Check if the output matches the expected NEXUS header and matrix
-        #{Check this feature later}
         self.assertEqual(captured_output.getvalue().strip(),
                          self.expected_nexus_header)

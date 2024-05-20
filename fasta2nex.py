@@ -14,12 +14,10 @@ def read_fasta(input_file):
         is the corresponding sequence.
     """
 
-
     def truncate_name(name):
         return name[:99]
 
-
-    def normalize_sequence(sequence):
+    def normaliz_seq(sequence):
         return sequence.replace(".", "N").replace("-", "N")
 
     sequences = {}
@@ -33,8 +31,8 @@ def read_fasta(input_file):
                 if name is not None:
                     truncated_name = truncate_name(name)
                     if truncated_name in names_set:
-                        raise ValueError(f"Same seq name:{truncated_name}")                 
-                    sequences[truncated_name] = normalize_sequence(sequence.upper())
+                        raise ValueError(f"Same seq name:{truncated_name}")
+                    sequences[truncated_name] = normaliz_seq(sequence.upper())
                     names_set.add(truncated_name)
                     sequence = ""
                 name = line[1:]  # Remove the ">" character from the name
@@ -44,7 +42,7 @@ def read_fasta(input_file):
             truncated_name = truncate_name(name)
             if truncated_name in names_set:
                 raise ValueError(f"Duplicate sequence name: {truncated_name}")
-            sequences[truncated_name] = normalize_sequence(sequence.upper())
+            sequences[truncated_name] = normaliz_seq(sequence.upper())
             names_set.add(truncated_name)
     return sequences
 
@@ -93,3 +91,4 @@ if __name__ == "__main__":
         fasta_to_nexus(input_file)
     else:
         print("Usage: python FASTA2NEX.py input.fasta > output.nexus")
+        
