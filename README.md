@@ -1,12 +1,14 @@
 # FASTA to NEXUS Converter
 ## Description
-This Python script converts a FASTA file to NEXUS format with a MrBayes block, providing a convenient way to process biological sequence data for further analysis.
+This repository contains a script and associated unit tests for converting DNA sequence data from FASTA format to NEXUS format. The script `fasta2nex.py` consists of functions to read FASTA files, generate NEXUS headers, and convert the entire content into a NEXUS formatted output.
 
-## Features
-* Reads a FASTA file and converts it to NEXUS format.
-* Handles truncation of sequence names to 99 characters for compatibility.
-* Replaces missing and gap characters with "N" for consistency.
-* Supports customization of the number of generations (ngen) and outgroup sequence (outgroup) for the MrBayes block.
+## Features `fasta2nex.py`
+* read_fasta(file_path): Reads a FASTA file and returns a dictionary of sequences;
+* generate_nexus_header(sequences): Generates a NEXUS header and MATRIX block from a dictionary of sequences;
+* fasta_to_nexus(file_path): Converts a FASTA file to NEXUS format and prints the output to STDOUT.
+
+## Features `script_test.py`
+This script contains unit tests for the functions provided in `fasta2nex.py`. It ensures that each function works correctly by checking them against expected outputs using the `unittest` framework.
 
 ## Requirements
 * <a href= "https://www.python.org/"> Python </a> 
@@ -25,21 +27,22 @@ cd main.zip
 ```
 Then, run the following command:
 ```bash
-python fasta2nex.py input.fasta [ngen] [outgroup]
+python fasta2nex.py input.fasta
 ```
 
 * Replace input.fasta with the path to your FASTA file.
 
-* Optionally, specify the number of generations (ngen) for the MrBayes analysis.
-
-* Optionally, specify the name of the outgroup sequence (outgroup).
-
 * The NEXUS output will be printed to the console
 
-## Example
-To convert a FASTA file named sequences.fasta to NEXUS format with 5000 generations and an outgroup sequence named outgroup1, run the following command:
+To run the `script_test.py`:
 
-`python fasta2nex.py sequences.fasta 5000 outgroup1`
+```bash
+python -m unittest script_test.py
+```
+## Motivation
+* Practical Application: To provide a simple and efficient way to convert DNA sequence data from the widely used FASTA format to the NEXUS format, which is commonly used in phylogenetic analysis;
+
+* Educational: This script was developed as a homework assignment for UC Análise de Sequências Biológicas. 
 
 ## Credits
 <p> <a href= "https://github.com/Rendrick27"> Rendrick Carreira - 201901365 </a> </p>
