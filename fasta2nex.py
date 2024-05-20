@@ -91,4 +91,3 @@ if __name__ == "__main__":
         fasta_to_nexus(input_file)
     else:
         print("Usage: python FASTA2NEX.py input.fasta > output.nexus")
-        

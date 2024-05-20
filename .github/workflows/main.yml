@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run script
-      run: python3 fasta2nex.py test.fasta
+      run: python -m unittest script_test.py
 
   fasta2nex:
     needs: unittest
